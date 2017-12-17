@@ -720,6 +720,7 @@
 											</xs:all>
 										</xs:complexType>
 									</xs:element>
+									<xs:element type="xs:string" name="title" />
 									<xs:element type="xs:string" name="description" />
 									<xs:element name="number" type="xs:int" maxOccurs="1"
 										minOccurs="0">
