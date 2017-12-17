@@ -133,7 +133,7 @@ public class UnsafeControlAction extends ATableModel
   @Override
   public void prepareForSave() {
     super.prepareForSave();
-    correspondingSafetyConstraint.prepareForSave();
+    getCorrespondingSafetyConstraint().prepareForSave();
   }
 
   @Override

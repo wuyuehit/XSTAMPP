@@ -53,7 +53,7 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
   private static String[] _withScenarioColumns = new String[] { Messages.Component,
       Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks, "Causal Scenarios",
       Messages.SafetyConstraint, Messages.NotesSlashRationale };
-  private static String[] _withoutColumns = new String[] { Messages.Component,
+  private static String[] _withoutColumns = new String[] {
       Messages.CausalFactors, "Unsafe Control Action", Messages.HazardLinks,
       Messages.SafetyConstraint, Messages.NotesSlashRationale };
   /**
@@ -161,12 +161,17 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
     }
     List<ICausalComponent> components = this.getDataModel().getCausalComponents(null);
     for (ICausalComponent component : components) {
+      System.out.println("Get component: " + component.getText());
       if (isFiltered(component)) {
         continue;
       }
-      GridRow componentRow = new GridRow(this.getGridWrapper().getColumnLabels().length);
-      int cellNumber = 0;
-      componentRow.addCell(cellNumber, new GridCellText(component.getText()));
+      
+      // the last parameter means, based on which column, the other columns can expand
+      // since we want all the columns are expandable, we choose a column that not exists
+      // as the base column
+      GridRow componentRow = new GridRow(this.getGridWrapper().getColumnLabels().length, 1, new int[] {7});
+      int cellNumber = -1;
+      // componentRow.addCell(cellNumber, new GridCellText(component.getText()));
       getGridWrapper().addRow(componentRow);
       Map<UUID, ICorrespondingUnsafeControlAction> ucaMap = new HashMap<>();
       for (ICorrespondingUnsafeControlAction uca : getDataModel().getUCAList(null)) {
@@ -186,13 +191,16 @@ public class CausalFactorsView extends CommonGridView<ICausalFactorDataModel> {
             getGridWrapper().getColumnLabels().length - cellNumber - 1);
         componentRow.addChildRow(buttonRow);
       }
+      
+      // we only need one cause factor adding row
+      break;
     }
   }
 
   private GridRow createCausalFactorRow(int cellNumber, ICausalComponent component,
       ICausalFactor factor, Map<UUID, ICorrespondingUnsafeControlAction> ucaMap) {
-    GridRow factorRow = new GridRow(this.getGridWrapper().getColumnLabels().length - 1, 1,
-        new int[] { 1 });
+    GridRow factorRow = new GridRow(this.getGridWrapper().getColumnLabels().length - cellNumber - 1, 1,
+        new int[] { cellNumber + 1 });
     CellEditorCausalFactor cell = new CellEditorCausalFactor(getGridWrapper(), getDataModel(),
         factor.getText(), component.getId(), factor.getId());
     if (!checkAccess(AccessRights.ADMIN)) {
